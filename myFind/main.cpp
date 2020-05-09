@@ -38,6 +38,8 @@ char * returnCWDP();
 char * sanitizePath(char* path);
 
 void printResult(bool& fileFound, const char* path);
+void simpleSearch(const char* fileName, const char* path, bool& fileFound);
+void simpleSearch_CSInsensitive(const char* fileName, const char* path, bool& fileFound);
 void searchFile(const char* fileName, const char* basePath, bool& fileFound);
 void searchFile_CSInsensitive(const char* fileName, const char* basePath, bool& fileFound);
 
@@ -63,7 +65,7 @@ int main( int argc, char*argv[] ) {
 
     programm_name = argv[0];
 
-    while ( (c = getopt( argc, argv, "Ri:" )) != EOF ) {
+    while ( (c = getopt( argc, argv, "Ri" )) != EOF ) {
         switch (c) {
             case '?':
                 fprintf( stderr, "%s error: Unknown option.\n", programm_name );
@@ -117,13 +119,46 @@ int main( int argc, char*argv[] ) {
         char *basePath = argv[optind+1];
         char *nameOfFile = argv[optind];
 
-        searchFile(nameOfFile,basePath, fileFound);
+        searchFile_CSInsensitive(nameOfFile,basePath, fileFound);
         if(fileFound == false)
         {
             printf("File not found.\n");
         }
         printf("End of Program\n");
     }
+
+    if(Counter_Option_R != 1 && Counter_Option_i != 1)
+    {
+        printf("Base Path: %s\n", argv[optind+1]);
+        printf("File Name: %s\n", argv[optind]);
+        char *basePath = argv[optind+1];
+        char *nameOfFile = argv[optind];
+
+        simpleSearch(nameOfFile,basePath, fileFound);
+        if(fileFound == false)
+        {
+            printf("File not found.\n");
+        }
+        printf("End of Program\n");
+    }
+
+    if(Counter_Option_R != 1 && Counter_Option_i == 1)
+    {
+        printf("Base Path: %s\n", argv[optind+1]);
+        printf("File Name: %s\n", argv[optind]);
+        char *basePath = argv[optind+1];
+        char *nameOfFile = argv[optind];
+
+        simpleSearch_CSInsensitive(nameOfFile,basePath, fileFound);
+        if(fileFound == false)
+        {
+            printf("File not found.\n");
+        }
+        printf("End of Program\n");
+    }
+
+
+
 
     /*
     if ( optind < argc ) {
@@ -250,6 +285,67 @@ char * returnCWDP()
 
     return mycwdp;
 }
+
+void simpleSearch(const char* fileName, const char* path, bool& fileFound)
+{
+    struct dirent *direntp;
+    DIR *dirp;
+
+    if ((dirp = opendir(path)) == NULL) {
+      perror ("Failed to open directory");
+      return;
+    }
+
+    while ((direntp = readdir(dirp)) != NULL)
+    {
+        if(fileFound == true)
+        {
+            return;
+        }
+
+        if(strcmp(direntp->d_name, fileName) == 0)
+        {
+            char* currentWDP = returnCWDP();
+            strcat(currentWDP, path);
+            printf("File found at: %s\n", currentWDP);
+            fileFound = true;
+            return;
+        }
+
+    }
+    while ((closedir(dirp) == -1) && (errno == EINTR)) ;
+}
+
+void simpleSearch_CSInsensitive(const char* fileName, const char* path, bool& fileFound)
+{
+    struct dirent *direntp;
+    DIR *dirp;
+
+    if ((dirp = opendir(path)) == NULL) {
+      perror ("Failed to open directory");
+      return;
+    }
+
+    while ((direntp = readdir(dirp)) != NULL)
+    {
+        if(fileFound == true)
+        {
+            return;
+        }
+
+        if(strcasecmp(direntp->d_name, fileName) == 0)
+        {
+            char* currentWDP = returnCWDP();
+            strcat(currentWDP, path);
+            printf("File found at: %s\n", currentWDP);
+            fileFound = true;
+            return;
+        }
+
+    }
+    while ((closedir(dirp) == -1) && (errno == EINTR)) ;
+}
+
 
 //char * sanitizePath(char* path)
 //{
