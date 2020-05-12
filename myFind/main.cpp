@@ -1,34 +1,17 @@
-/*
- * =====================================================================================
- *
- *       Filename:  getopt.c
- *
- *    Description:  getopt() Übungsbeispiel
- *
- *        Version:  1.0
- *        Created:  21/04/16 23:27:49 CEST
- *       Revision:  Tue 23 Apr 13:10:32 CEST 2019
- *       Compiler:  gcc
- *
- *         Author:  R. Pfeiffer (Mr), pfeiffer@technikum-wien.at
- *        Company:  https://www.technikum-wien.at/
- *
- * =====================================================================================
- */
-
-/* GNU C Compiler  : gcc -Wall -o getopt_test getopt.c
-   Clang C Compiler: clang -Wall -o getopt_test getopt.c
- */
+/* GNU C Compiler  : g++ -Wall -o suche.cpp main.cpp */
 
 #include <stdio.h>
 #include <dirent.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <assert.h>
 /* Include Datei für getopt(); getopt.h geht auch, ist aber älter. */
 #include <unistd.h>
 #include <string.h>
+
+#include "../kopf.h"
 
 #ifndef PATH_MAX
 #define PATH_MAX 255
@@ -58,7 +41,6 @@ int main( int argc, char*argv[] ) {
     bool fileFound = false;
 
     int c;
-    char *dateiname;
     char *programm_name;
     unsigned short Counter_Option_R = 0;
     unsigned short Counter_Option_i = 0;
@@ -75,14 +57,14 @@ int main( int argc, char*argv[] ) {
                 break;
             case 'R':
                 Counter_Option_R++;
-                printf("%s\n", argv);
+//                printf("%s\n", argv);
 //                print_usage( programm_name );
-                printf("Parsing Option R with OPTIND = %i, OPTARG = %s\n", optind, optarg);
+//                printf("Parsing Option R with OPTIND = %i, OPTARG = %s\n", optind, optarg);
 
                 break;
             case 'i':
                 Counter_Option_i++;
-                printf("Parsing Option i with OPTIND = %i, OPTARG = %s, ARGC = %i\n", optind, optarg, argc );
+//                printf("Parsing Option i with OPTIND = %i, OPTARG = %s, ARGC = %i\n", optind, optarg, argc );
 //                dateiname = optarg;
                 break;
             default:
@@ -97,92 +79,152 @@ int main( int argc, char*argv[] ) {
         exit(1);
     }
 
+    if(optind+1 >= argc) // If no filename or no path is given, cancel program and show error Message
+    {
+        fprintf( stderr, "%s Fehler: Zu wenige Optionen angegeben.\n", programm_name );
+        exit(2);
+    }
+
+
     if(Counter_Option_R == 1 && Counter_Option_i != 1)
     {
-        printf("Base Path: %s\n", argv[optind+1]);
-        printf("File Name: %s\n", argv[optind]);
-        char *basePath = argv[optind+1];
-        char *nameOfFile = argv[optind];
-
-        searchFile(nameOfFile,basePath, fileFound);
-        if(fileFound == false)
+        for(int i=0; i<(argc - 3);++i) // Accounting for other variables and options in this case
         {
-            printf("File not found.\n");
+//            printf("Base Path: %s\n", argv[optind]);
+//            printf("File Name: %s\n", argv[optind+1+i]);
+            char *basePath = argv[optind];
+            char *nameOfFile = argv[optind+1+i];
+
+            pid_t myPid = fork();
+
+            if(myPid == 0)
+            {
+                searchFile(nameOfFile,basePath, fileFound); // search Files recursively; Without fork: set fileFound to false after iteration.
+                if(fileFound == false)
+                {
+                    pid_t childPID = getpid();
+                    printf("PID: %ld reports -> File %s not found.. \n", (long)childPID, nameOfFile);printf("PID: %ld reports -> File %s not found.. \n", (long)myPid, nameOfFile);
+                }
+                exit(0); // Exit only the child process of fork in order to hava one parent alone, creating the forks
+            }
+            else if(myPid == -1)
+            {
+                fprintf(stderr, "%s Fehler: Generieren eines Kindprozesses fehlgeschlagen.\n", programm_name );
+                exit(1);
+            }
         }
-        printf("End of Program\n");
+
+        for(int i=0; i < (argc-3);++i)
+        {
+            wait(NULL);
+        }
+        printf("\nEnd of Program\n");
     }
 
     if(Counter_Option_R == 1 && Counter_Option_i == 1)
     {
-        printf("Base Path: %s\n", argv[optind+1]);
-        printf("File Name: %s\n", argv[optind]);
-        char *basePath = argv[optind+1];
-        char *nameOfFile = argv[optind];
-
-        searchFile_CSInsensitive(nameOfFile,basePath, fileFound);
-        if(fileFound == false)
+        for(int i=0; i<(argc - 4);++i) // Accounting for other variables and options in this case
         {
-            printf("File not found.\n");
+//            printf("Base Path: %s\n", argv[optind]);
+//            printf("File Name: %s\n", argv[optind+1+i]);
+            char *basePath = argv[optind];
+            char *nameOfFile = argv[optind+1+i];
+
+            pid_t myPid = fork();
+
+            if(myPid == 0)
+            {
+                searchFile_CSInsensitive(nameOfFile,basePath, fileFound); // search Files recursively; Without fork: set fileFound to false after iteration.
+                if(fileFound == false)
+                {
+                    pid_t childPID = getpid();
+                    printf("PID: %ld reports -> File %s not found.. \n", (long)childPID, nameOfFile);
+                }
+                exit(0); // Exit only the child process of fork in order to hava one parent alone, creating the forks
+            }
+            else if(myPid == -1)
+            {
+                fprintf(stderr, "%s Fehler: Generieren eines Kindprozesses fehlgeschlagen.\n", programm_name );
+                exit(1);
+            }
         }
-        printf("End of Program\n");
+
+        for(int i=0; i < (argc-4);++i)
+        {
+            wait(NULL);
+        }
+        printf("\nEnd of Program\n");
     }
 
     if(Counter_Option_R != 1 && Counter_Option_i != 1)
     {
-        printf("Base Path: %s\n", argv[optind+1]);
-        printf("File Name: %s\n", argv[optind]);
-        char *basePath = argv[optind+1];
-        char *nameOfFile = argv[optind];
-
-        simpleSearch(nameOfFile,basePath, fileFound);
-        if(fileFound == false)
+         for(int i=0; i<(argc - 2);++i) // Accounting for other variables and options in this case
         {
-            printf("File not found.\n");
+//            printf("Base Path: %s\n", argv[optind]);
+//            printf("File Name: %s\n", argv[optind+1+i]);
+            char *basePath = argv[optind];
+            char *nameOfFile = argv[optind+1+i];
+
+            pid_t myPid = fork();
+
+            if(myPid == 0)
+            {
+                simpleSearch(nameOfFile,basePath, fileFound); // search Files recursively; Without fork: set fileFound to false after iteration.
+                if(fileFound == false)
+                {
+                    pid_t childPID = getpid();
+                    printf("PID: %ld reports -> File %s not found.. \n", (long)childPID, nameOfFile);
+                }
+                exit(0); // Exit only the child process of fork in order to hava one parent alone, creating the forks
+            }
+            else if(myPid == -1)
+            {
+                fprintf(stderr, "%s Fehler: Generieren eines Kindprozesses fehlgeschlagen.\n", programm_name );
+                exit(1);
+            }
         }
-        printf("End of Program\n");
+
+        for(int i=0; i < (argc-2);++i)
+        {
+            wait(NULL);
+        }
+        printf("\nEnd of Program\n");
     }
 
     if(Counter_Option_R != 1 && Counter_Option_i == 1)
     {
-        printf("Base Path: %s\n", argv[optind+1]);
-        printf("File Name: %s\n", argv[optind]);
-        char *basePath = argv[optind+1];
-        char *nameOfFile = argv[optind];
-
-        simpleSearch_CSInsensitive(nameOfFile,basePath, fileFound);
-        if(fileFound == false)
+       for(int i=0; i<(argc - 3);++i) // Accounting for other variables and options in this case
         {
-            printf("File not found.\n");
+//            printf("Base Path: %s\n", argv[optind]);
+//            printf("File Name: %s\n", argv[optind+1+i]);
+            char *basePath = argv[optind];
+            char *nameOfFile = argv[optind+1+i];
+
+            pid_t myPid = fork();
+
+            if(myPid == 0)
+            {
+                simpleSearch_CSInsensitive(nameOfFile,basePath, fileFound); // search Files recursively; Without fork: set fileFound to false after iteration.
+                if(fileFound == false)
+                {
+                    pid_t childPID = getpid();
+                    printf("PID: %ld reports -> File %s not found.. \n", (long)childPID, nameOfFile);
+                }
+                exit(0); // Exit only the child process of fork in order to hava one parent alone, creating the forks
+            }
+            else if(myPid == -1)
+            {
+                fprintf(stderr, "%s Fehler: Generieren eines Kindprozesses fehlgeschlagen.\n", programm_name );
+                exit(1);
+            }
         }
-        printf("End of Program\n");
-    }
 
-
-
-
-    /*
-    if ( optind < argc ) {
-        printf("ARGV Elemente ohne Optionen: ");
-        while ( optind < argc ) {
-            printf("%s ", argv[optind++]);
+        for(int i=0; i < (argc-3);++i)
+        {
+            wait(NULL);
         }
-        printf("\n");
+        printf("\nEnd of Program\n");
     }
-    */
-    /* if ( optind >= argc ) {
-        fprintf(stderr, "Fehler: Es wurden Optionen, die Argumente erwarten, ohne Argument angegeben.\n");
-        exit(EXIT_FAILURE);
-    } */
-
-    /*
-    printf("Es wurden %u Argumente angeben.\n", argc );
-    printf("Verbose Modus ist");
-    if ( opt_verbose == 0 ) {
-        printf(" nicht");
-    }
-    printf(" gesetzt.\n"); */
-    /* In main() sind return() und exit() gleichwertig. */
-    return(0);
 }
 
 void searchFile(const char* fileName, const char* basePath, bool& fileFound)
@@ -215,7 +257,8 @@ void searchFile(const char* fileName, const char* basePath, bool& fileFound)
             {
                 char* currentWDP = returnCWDP();
                 strcat(currentWDP, path);
-                printf("File found at: %s\n", currentWDP);
+                pid_t pid = getpid();
+                printf("PID: %ld reports -> File %s found at: %s\n", (long)pid, fileName ,currentWDP);
                 fileFound = true;
                 return;
             }
@@ -256,7 +299,8 @@ void searchFile_CSInsensitive(const char* fileName, const char* basePath, bool& 
             {
                 char* currentWDP = returnCWDP();
                 strcat(currentWDP, path);
-                printf("File found at: %s\n", currentWDP);
+                pid_t pid = getpid();
+                printf("PID: %ld reports -> File %s found at: %s\n", (long)pid, fileName ,currentWDP);
                 fileFound = true;
                 return;
             }
@@ -281,7 +325,7 @@ char * returnCWDP()
     if (getcwd(mycwdp, maxpath) == NULL) {
       perror("Failed to get current working directory");
     }
-    printf("Current working directory: %s\n", mycwdp);
+//    printf("Current working directory: %s\n", mycwdp);
 
     return mycwdp;
 }
@@ -307,7 +351,8 @@ void simpleSearch(const char* fileName, const char* path, bool& fileFound)
         {
             char* currentWDP = returnCWDP();
             strcat(currentWDP, path);
-            printf("File found at: %s\n", currentWDP);
+            pid_t pid = getpid();
+            printf("PID: %ld reports -> File %s found at: %s\n", (long)pid, fileName ,currentWDP);
             fileFound = true;
             return;
         }
@@ -337,7 +382,8 @@ void simpleSearch_CSInsensitive(const char* fileName, const char* path, bool& fi
         {
             char* currentWDP = returnCWDP();
             strcat(currentWDP, path);
-            printf("File found at: %s\n", currentWDP);
+            pid_t pid = getpid();
+            printf("PID: %ld reports -> File %s found at: %s\n", (long)pid, fileName ,currentWDP);
             fileFound = true;
             return;
         }
