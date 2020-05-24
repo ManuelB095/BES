@@ -111,7 +111,7 @@ int main(int argc, char * argv[])
         I do this with msgType and typeChar.
 
         The actual transmitted text is saved in msg.mText. It can be one of two things:
-        (1) R12345 -> Registrate, followed by the Vehicle Clients Process ID ( which gets saved into my struct Car via Cars[index].pid = ... )
+        (1) R12345 -> R-egistrate, followed by the Vehicle Clients Process ID ( which gets saved into my struct Car via Cars[index].pid = ... )
         (2) MN ME MS MW -> M-ove, followed by a char ( N, E, S, W ) determining the direction in which the car wants to move. I save this in char whereTo
 
         The Car struct simply stores the Vehicle Clients name ( A to Z ), it`s PID, and it`s coordinates.
@@ -175,7 +175,7 @@ int main(int argc, char * argv[])
       {
         if(in_array(typeChar, Cars)) /** Car is already registered ! Such insolence deserves sudden and complete Termination !**/
         {
-            //kill(Cars[msgType-1].pid, SIGKILL);
+            kill(Cars[msgType-1].pid, SIGKILL);
         }
         else /** Oh my, a new Car ! Let`s Register and give it Coordinates right away ! **/
         {

@@ -105,9 +105,17 @@ int main(int argc, char* argv[])
    pid_t thisPid;
    thisPid = getpid();
    char pidChars [MAX_DATA];
+   printf("%s\n", msg.mText);
+   for(unsigned int i=0; i < MAX_DATA;i++)
+   {
+        msg.mText[i] = '\0';
+   }
    msg.mText[0] = 'R'; // R for Registration
+   printf("%s\n", msg.mText);
+
    sprintf(pidChars, "%d", thisPid);
    strncat(msg.mText,pidChars,MAX_DATA);
+   printf("%c\n",msg.mText[2]);
    printf("Car %c with pid %ul is created and trying to registrate.\n", carName, thisPid);
    // Send the message
    /* Message Queue oeffnen */
@@ -136,7 +144,7 @@ int main(int argc, char* argv[])
         fgets(consoleInput, MAX_DATA, stdin);
 
         // If Vehicle wants to move
-        if (consoleInput[0] == 'W' || consoleInput[0] == 'A' || consoleInput[0] == 'S' || consoleInput[0] == 'D') {
+        if (consoleInput[0] == 'W' || consoleInput[0] == 'E' || consoleInput[0] == 'S' || consoleInput[0] == 'N') {
             msg.mType  = (long)(carName - 'A' + 1);
             strcpy(msg.mText, "M");
             strncat(msg.mText, &consoleInput[0], 1);
