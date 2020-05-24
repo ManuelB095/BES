@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1590253738 source:/home/gigi/programmieren/anzeige/main.cpp
+	<iostream>
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	<unistd.h>
+	<sys/stat.h>
+	<fcntl.h>
+	<vector>
+
