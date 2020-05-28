@@ -28,21 +28,14 @@ typedef struct
 	char mText[MAX_DATA];
 } message_t;
 
-void sigterm_handler (int sig) // Program was ordered to terminate. Exit Program.
-{
-	fprintf(stdout,"\nVehicle has been eliminated\n");
-	//fflush(stdout);
-	exit(EXIT_SUCCESS); // Or return EXIT_SUCCESS ?
-}
-
 void sig_handler (int sig)
 {
 	int msgid = -1;
 	message_t msg;
-	std::string t = "T";
+	std::string t = "t";
 	strcpy(msg.mText, t.c_str()); // This seems weird, but using char * t throws a warning
 
-	if(sig_carName != '\0')
+	if(sig_carName != '\0') // Gets updated to car name`s char in main function
 	{
         msg.mType = sig_carName;
 	}
@@ -65,6 +58,8 @@ void sig_handler (int sig)
 	      	fprintf(stderr,"Can't send message\n");
 	      	//return EXIT_FAILURE;
 	}
+    fprintf(stdout,"\nVehicle has been eliminated\n");
+    exit(EXIT_SUCCESS); // Or return EXIT_SUCCESS ?
 }
 
 
@@ -77,8 +72,7 @@ void sig_handler (int sig)
 
 int main(int argc, char* argv[])
 {
-
-   signal(SIGTERM, sigterm_handler);
+   signal(SIGTERM, sig_handler);
    signal(SIGINT, sig_handler);
    signal(SIGQUIT, sig_handler);
    signal(SIGHUP, sig_handler);
@@ -86,6 +80,13 @@ int main(int argc, char* argv[])
    message_t msg;	/* Buffer fuer Message */
    int msgid = -1;	/* Message Queue ID */
    char carName = argv[1][0]; // The char that specifies the vehicleName
+
+   if(carName < 'A' || carName > 'Z')
+   {
+        fprintf(stderr,"%c is not a valid Car name !\n",carName);
+        return EXIT_FAILURE;
+   }
+
    sig_carName = carName;
    //char recvType = msg.mType * 10; // Lazy way to see, if this message is for me
 
@@ -144,32 +145,36 @@ int main(int argc, char* argv[])
         fgets(consoleInput, MAX_DATA, stdin);
 
         // If Vehicle wants to move
-        if (consoleInput[0] == 'W' || consoleInput[0] == 'E' || consoleInput[0] == 'S' || consoleInput[0] == 'N') {
+        if (consoleInput[0] == 'W' || consoleInput[0] == 'E' || consoleInput[0] == 'S' || consoleInput[0] == 'N')
+        {
             msg.mType  = (long)(carName - 'A' + 1);
             strcpy(msg.mText, "M");
             strncat(msg.mText, &consoleInput[0], 1);
 
-            if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
+            if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1)
+            {
                 /* error handling */
                 fprintf(stderr, "%s: Can't send message\n", argv[0]);
                 return EXIT_FAILURE;
-                }
             }
+        }
+        else {
+            continue;
+        }
 
             // If Vehicle wants to terminate
-            if (consoleInput[0] == 't') {
-                return EXIT_FAILURE;
-
+            if (consoleInput[0] == 't')
+            {
                 msg.mType = (long)(carName - 'A' + 1);
-                strncpy(msg.mText, "T", MAX_DATA);
+                strncpy(msg.mText, "t", MAX_DATA);
 
                 if (msgsnd(msgid, &msg, sizeof(msg) - sizeof(long), 0) == -1) {
                     /* error handling */
                     fprintf(stderr, "%s: Can't send message\n", argv[0]);
+                }
+                return EXIT_FAILURE;
             }
-
-        }
-    }
+    } // END OF WHILE LOOP
    return EXIT_SUCCESS;
 }
 

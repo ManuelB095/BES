@@ -7,7 +7,10 @@
 #include <stdio.h>
 #include <string>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -19,14 +22,20 @@
 #define PATH_MAX 255
 #endif
 
+<<<<<<< HEAD
 >>>>>>> e006d68cff267b185ab090027fb11ded0ae9716c
+=======
+>>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 using namespace std;
 
 // überprüft ob der angegebene Pfad ein relativer Pfad ist oder ein absoluter Pfad und gibt den absoluten Pfad aus
 string pathfinder (string weg, string filename);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 
 // einfache filesuche
 void simpleSearch(const char* fileName, const char* path, bool& fileFound);
@@ -50,5 +59,8 @@ void print_usage( char *programm_name );
 
 char * sanitizePath(char* path);
 
+<<<<<<< HEAD
 >>>>>>> e006d68cff267b185ab090027fb11ded0ae9716c
+=======
+>>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 #endif // KOPF_H_INCLUDED

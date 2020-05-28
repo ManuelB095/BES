@@ -2,6 +2,7 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 //---------------------------------------------------------//
 int main(int argc, char *argv[])
@@ -65,6 +66,8 @@ int main(int argc, char *argv[])
     return 0;
 }
 =======
+=======
+>>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 /* Verbose Flag wird global gesetzt, damit der komplette Code es sehen kann. */
 unsigned short opt_verbose = 0;
 
@@ -266,4 +269,7 @@ int main( int argc, char*argv[] ) {
 
 
 
+<<<<<<< HEAD
 >>>>>>> e006d68cff267b185ab090027fb11ded0ae9716c
+=======
+>>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc

@@ -11,13 +11,13 @@
 
 #define MAX_DATA 255
 
-typedef struct
+typedef struct // C Struct
 {
 	long mType;
 	char mText[MAX_DATA];
 } message_t;
 
-struct Car
+struct Car // C++ Struct
 {
     char name;
     long pid;
