@@ -1,21 +1,9 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-#include "kopf.h"
 
-
-// überprüft ob der angegebene Pfad ein relativer Pfad ist oder ein absoluter Pfad und gibt den absoluten Pfad aus
-=======
-=======
->>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 
 #include "kopf.h"
 
 
 // ---------------------------------------------------Pfad chek--------------------------------------------------------------
-<<<<<<< HEAD
->>>>>>> e006d68cff267b185ab090027fb11ded0ae9716c
-=======
->>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 string pathfinder (string weg, string filename)
 {
     int lang = weg.length(); //die Länge des Pfads wird überprüft (
@@ -59,15 +47,7 @@ string pathfinder (string weg, string filename)
         }
 
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    if(check) //wenn es nach dem "./" einen tieferen Pfad gegeben hat, wird di
-=======
     if(check) //wenn es nach dem "./" einen tieferen Pfad gegeben hat, wird dieser hier angehängt
->>>>>>> e006d68cff267b185ab090027fb11ded0ae9716c
-=======
-    if(check) //wenn es nach dem "./" einen tieferen Pfad gegeben hat, wird dieser hier angehängt
->>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
     {
         weg+=rest;
     }
@@ -80,11 +60,6 @@ string pathfinder (string weg, string filename)
 
     return weg;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc
 
 
 
@@ -273,7 +248,3 @@ void print_usage( char *programm_name ) {
     printf("Usage: %s [-R] [-i] searchpath filename1 [filename2]...[filenameN]\n\n",programm_name);
     return;
 }
-<<<<<<< HEAD
->>>>>>> e006d68cff267b185ab090027fb11ded0ae9716c
-=======
->>>>>>> 912251e9fffe17bd68a18abcf7e2a7175c5dc6cc

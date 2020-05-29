@@ -1,13 +1,7 @@
-all: GridServer GridDisplay GridClient
+all: myFind
 
-GridServer: mainGridserver.cpp
-	g++ mainGridserver.cpp gridserver.cpp -o GridServer
-
-GridDisplay: mainDisplay.cpp
-	g++ mainDisplay.cpp -o GridDisplay
-
-GridClient: mainClient.cpp
-	g++ mainClient.cpp clientLogic.cpp -o GridClient
+myFind: mainSuche.cpp
+	g++ mainSuche.cpp funktionen.cpp -o myFind
 
 clean:
-	rm GridServer GridDisplay GridClient
+	rm myFind

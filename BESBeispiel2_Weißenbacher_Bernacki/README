@@ -1,0 +1,19 @@
+Die folgenden Zeilen erklären kurz die beispielhafte Nutzung unseres Programms ( Bitte in genau dieser Reiehnfolge ausführen ! )
+
+1. ./GridServer -x10 -y10
+
+Startet den GridServer mit einer feldgröße von 10x10
+
+2. ./GridDisplay 
+
+Startet die Anzeige ( momentan noch keine Ausgabe des Feldes )
+
+3. ./GridClient A
+
+Erzeugt einen Client namens A. 
+Nun können Bewegungsbefehle (WESN) eingegeben werden.
+War der Befehl gültig, bewegt sich das Auto am Server und der Anzeige entsprechend.
+
+--------------------------------------------------------------------------------------------------------
+Anmerkung: 
+Es kam bei den Tests hin und wieder zu einer nicht ordnungsgemäßen Terminierung, wobei evtl. die MessageQueue nicht zerstört wird. Obwohl dies nicht mehr passieren sollte, sei angemerkt, dass übriggebliebene MessageQueues mit ungelesenen Nachrichten zu unvorhergesehenen Problemen führen könnten. Diese sollten daher gelöscht werden.

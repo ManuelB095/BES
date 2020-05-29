@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1590768682 source:/home/cin/Documents/BES/BES/temp/funktionen.cpp
+	"kopf.h"
+
+1590768888 /home/cin/Documents/BES/BES/temp/kopf.h
+	<iostream>
+	<dirent.h>
+	<stdlib.h>
+	<unistd.h>
+	<stdio.h>
+	<string>
+	<string.h>
+	<errno.h>
+	<sys/types.h>
+	<sys/wait.h>
+	<assert.h>
+
+1590768682 source:/home/cin/Documents/BES/BES/temp/main.cpp
+	"kopf.h"
+

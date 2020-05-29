@@ -1,0 +1,12 @@
+Der folgende Code-Abschnitt soll Beispielhaft die (mögliche) Verwendung des Programms zeigen:
+
+./myFind -R ./ LaunchCodes.txt EvenLaunchierCodes.txt nonexistent.txt
+
+Zur Erklärung:
+
+-R bedeutet rekursive Suche
+./ bedeutet suche im aktuellen Verzeichnis
+
+Die ersten Beiden Textdateien werden gefunden.
+
+
